@@ -1,5 +1,9 @@
+from fastapi import FastAPI
+
+from app.core.config import settings
+
 def main():
-    print("Hello from llm-p!")
+    app = FastAPI(title=settings["APP_NAME"])
 
 
 if __name__ == "__main__":
