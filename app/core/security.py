@@ -1,15 +1,17 @@
 import time
 from typing import Any, Dict
 
+import base64
 from passlib.context import CryptContext
 import jwt
 
 from app.core.config import settings
+from app.core.errors import UnauthorizedError
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-SECRET_KEY = settings.jwt_secret
+SECRET_KEY = base64.b64encode(settings.jwt_secret.encode("utf-8"))
 ALGORITHM = settings.jwt_alg
 
 ACCESS_TTL_SECONDS = 60 * settings.access_token_expire_minutes
@@ -57,4 +59,14 @@ def create_access_token(sub: str) -> str:
 
 
 def decode_token(token: str) -> Dict[str, Any]:
-    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except jwt.ExpiredSignatureError:
+        raise UnauthorizedError(message="Токен истёк")
+    except jwt.InvalidTokenError:
+        raise UnauthorizedError(message="Некорректный токен")
+
+    if payload.get("type") != "access":
+        raise UnauthorizedError(message="Неверный тип токена")
+    
+    return payload
