@@ -5,7 +5,7 @@ from sqlalchemy import ForeignKey, String, Text
 from sqlalchemy.types import DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .db.base import Base
+from app.db.base import Base
 
 
 class User(Base):

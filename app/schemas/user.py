@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 
-from .core.config import settings
+from app.core.config import settings
 
 
 class UserPublic(BaseModel):
