@@ -16,7 +16,7 @@ class UserAlreadyExistsError(AppError):
     error_code = "CONFLICT"
 
     def __init__(self, field: str):
-        self.message = "{0} уже существует".format(field)
+        super().__init__(message=f"{field} уже существует")
 
 
 class UnauthorizedError(AppError):
@@ -36,7 +36,7 @@ class NotFoundError(AppError):
     error_code = "NOT_FOUND"
 
     def __init__(self, obj_name: str):
-        self.message = "Объект {0} не найден в базе".format(obj_name)
+        super().__init__(message=f"{obj_name} не найден в базе")
 
 
 class BadGatewayError(AppError):
