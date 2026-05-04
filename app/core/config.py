@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import AnyHttpUrl
 
 
 class Settings(BaseSettings):
@@ -13,9 +14,9 @@ class Settings(BaseSettings):
     sqlite_path: str
 
     openrouter_api_key: str
-    openrouter_base_url: str
+    openrouter_base_url: AnyHttpUrl
     openrouter_model: str
-    openrouter_site_url: str
+    openrouter_site_url: AnyHttpUrl
     openrouter_app_name: str
 
 
