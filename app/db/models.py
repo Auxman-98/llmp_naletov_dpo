@@ -21,7 +21,7 @@ class User(Base):
 
     chat_messages: Mapped[list["ChatMessage"]] = relationship(
         back_populates="user",
-        cascade="save, delete, delete-orphan, merge, expunge")
+        cascade="save-update, delete, delete-orphan, merge, expunge")
 
 
 class ChatMessage(Base):
