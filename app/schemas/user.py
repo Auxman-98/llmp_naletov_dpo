@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 
-from app.core.config import settings
+from app.core.config import Settings
 
 
 class UserPublic(BaseModel):
@@ -9,4 +9,4 @@ class UserPublic(BaseModel):
     role: str
 
 
-settings.model_config = {"from_attributes": True}
+Settings.model_config = {"from_attributes": True}
