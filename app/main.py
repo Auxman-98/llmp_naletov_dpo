@@ -1,5 +1,14 @@
+import asyncio
 from fastapi import FastAPI
 
-from .core.config import settings
+from app.core.config import settings
+from app.api.routes_auth import router as auth_router
 
-app = FastAPI(title=settings.app_name)
+
+async def main():
+    app = FastAPI(title=settings.app_name)
+    app.include_router(auth_router)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
