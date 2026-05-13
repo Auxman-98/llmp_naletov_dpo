@@ -1,16 +1,18 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.security import hash_password, verify_password, create_access_token
+from app.core.security import (hash_password, verify_password,
+    create_access_token)
 from app.db.models import User
 from app.repositories.users import UserRepository
-from app.core.errors import (UserAlreadyExistsError, UnauthorizedError, 
+from app.core.errors import (UserAlreadyExistsError, UnauthorizedError,
     NotFoundError)
 
 
 async def register_user(
-    session: AsyncSession, 
-    email: str, 
-    password: str) -> User:
+    session: AsyncSession,
+    email: str,
+    password: str
+) -> User:
     repo = UserRepository(session)
     existing = await repo.get_user_by_email(email)
     if existing:
@@ -24,9 +26,10 @@ async def register_user(
 
 
 async def login_user(
-    session: AsyncSession, 
-    email: str, 
-    password: str) -> str:
+    session: AsyncSession,
+    email: str,
+    password: str
+) -> str:
     repo = UserRepository(session)
     user = await repo.get_user_by_email(email)
 
@@ -39,15 +42,16 @@ async def login_user(
     token = create_access_token(sub=str(user.id))
 
     return token
- 
- 
- async def get_user_by_id(
+
+
+async def get_user_by_id(
      session: AsyncSession,
-     uid: int) -> User:
+     uid: int
+) -> User:
      repo = UserRepository(session)
      user = await repo.get_user_by_id(uid)
-     
+
      if not user:
          raise NotFoundError(f"Пользователь {uid}")
-     
+
      return user
