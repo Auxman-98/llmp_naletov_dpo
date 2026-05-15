@@ -6,7 +6,7 @@ from fastapi.security import (
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import decode_token
-from app.db.session import get_session
+from app.db.session import AsyncSessionLocal
 from app.db.models import User
 from app.usecases.auth import get_user_by_id
 
@@ -19,7 +19,7 @@ form_data: OAuth2PasswordRequestForm = Depends()
 
 async def get_current_user(
     token: str = Depends(security),
-    session: AsyncSession = Depends(get_session),
+    session: AsyncSession = Depends(AsyncSessionLocal),
 ) -> User | None:
     """
     Возвращает данные о текущем пользователе сервиса в Swagger UI.
