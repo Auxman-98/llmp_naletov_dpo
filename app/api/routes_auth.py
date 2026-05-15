@@ -9,7 +9,7 @@ from app.usecases.auth import (
     get_user_by_id,
 )
 from app.api.deps import form_data, get_current_user
-from app.db.session import get_session
+from app.db.session import AsyncSessionLocal
 from app.db.models import User
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -18,7 +18,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.post("/register")
 async def register(
     data: RegisterRequest,
-    session: AsyncSession = Depends(get_session),
+    session: AsyncSession = Depends(AsyncSessionLocal),
 ) -> UserPublic:
     user = await register_user(
         session=session,
@@ -36,7 +36,7 @@ async def register(
 
 @router.post("/login", response_model=TokenResponse)
 async def login(
-    session: AsyncSession = Depends(get_session),
+    session: AsyncSession = Depends(AsyncSessionLocal),
 ) -> TokenResponse:
     token = await login_user(
         session=session,
@@ -49,7 +49,7 @@ async def login(
 
 @router.get("/me")
 async def get_authorized_user(
-    session: AsyncSession = Depends(get_session),
+    session: AsyncSession = Depends(AsyncSessionLocal),
 ) -> User:
     curr_user = await get_current_user(session=session)
     auth_user = await get_user_by_id(session, curr_user.id)
