@@ -23,7 +23,7 @@ async def get_session() -> AsyncSession:
         db = AsyncSessionLocal()
         yield db
     finally:
-        db.close()
+        await db.close()
 
 
 async def get_current_user(
