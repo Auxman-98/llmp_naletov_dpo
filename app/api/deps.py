@@ -17,9 +17,17 @@ security = OAuth2PasswordBearer(
 form_data: OAuth2PasswordRequestForm = Depends()
 
 
+async def get_session() -> AsyncSession:
+    try:
+        db = await AsyncSessionLocal()
+        yield db
+    finally:
+        await db.close()
+
+
 async def get_current_user(
     token: str = Depends(security),
-    session: AsyncSession = Depends(AsyncSessionLocal),
+    session: AsyncSession = Depends(get_session),
 ) -> User | None:
     """
     Возвращает данные о текущем пользователе сервиса в Swagger UI.
