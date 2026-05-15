@@ -23,7 +23,7 @@ async def register(
     user = await register_user(
         session=session,
         email=data.email,
-        password=data.password
+        password=data.password,
     )
     reg_user = UserPublic(
         id=user.id,
@@ -50,8 +50,13 @@ async def login(
 @router.get("/me")
 async def get_authorized_user(
     session: AsyncSession = Depends(AsyncSessionLocal),
-) -> User:
+) -> UserPublic:
     curr_user = await get_current_user(session=session)
     auth_user = await get_user_by_id(session, curr_user.id)
+    user = UserPublic(
+        id=auth_user.id,
+        email=auth_user.email,
+        role=auth_user.role,
+    )
 
-    return auth_user
+    return user
