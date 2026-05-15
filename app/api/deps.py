@@ -20,10 +20,10 @@ form_data: OAuth2PasswordRequestForm = Depends()
 async def get_session() -> AsyncSession:
     db = AsyncSession()
     try:
-        db = await AsyncSessionLocal()
+        db = AsyncSessionLocal()
         yield db
     finally:
-        await db.close()
+        db.close()
 
 
 async def get_current_user(
