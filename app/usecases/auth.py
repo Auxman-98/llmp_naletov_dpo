@@ -12,10 +12,9 @@ async def register_user(
     session: AsyncSession,
     email: str,
     password: str
-) -> User:
+) -> User | None:
     repo = UserRepository(session)
-    existing = await repo.get_user_by_email(email)
-    if existing:
+    if repo.get_user_by_email(email):
         raise UserAlreadyExistsError(field="email")
 
     password_hash = hash_password(password)
