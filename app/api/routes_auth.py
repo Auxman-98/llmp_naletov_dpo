@@ -10,7 +10,6 @@ from app.usecases.auth import (
 )
 from app.api.deps import form_data, get_current_user
 from app.db.session import AsyncSessionLocal
-from app.db.models import User
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
