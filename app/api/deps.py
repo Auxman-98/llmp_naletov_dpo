@@ -18,6 +18,7 @@ form_data: OAuth2PasswordRequestForm = Depends()
 
 
 async def get_session() -> AsyncSession:
+    db = AsyncSession()
     try:
         db = await AsyncSessionLocal()
         yield db
