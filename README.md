@@ -13,6 +13,9 @@
   - Для установки приложения введите команду `uv pip install -r <(uv pip compile pyproject.toml)`
   - Для запуска приложения введите команду `uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
 
+## Регистрация пользователя
+![Результат регистрации пользователя в приложении](images/registration.png)
+
 ## Вспомогательные ссылки
 1. [Git](https://git-scm.com/)
 2. [Основы Linux от создателя Gentoo. Часть 2 (2/5): Назначения папок, поиск файлов](https://habr.com/ru/articles/105495/)

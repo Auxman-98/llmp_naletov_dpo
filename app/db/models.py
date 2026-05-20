@@ -13,13 +13,15 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
-    password_hash: Mapped[str] = mapped_column(String(255), deferred=True)
+    password_hash: Mapped[str] = mapped_column(String(255))
     role: Mapped[str] = mapped_column(String(10), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.now())
 
     chat_messages: Mapped[list["ChatMessage"]] = relationship(
         back_populates="user",
-        cascade="save, delete, delete-orphan, merge, expunge")
+        cascade="save-update, delete, delete-orphan, merge, expunge")
 
 
 class ChatMessage(Base):
@@ -30,7 +32,9 @@ class ChatMessage(Base):
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False)
     role: Mapped[str] = mapped_column(String(10), nullable=False)
-    content: Mapped[str] = mapped_column(Text(50))
-    created_at: Mapped[datetime] = mapped_column(DateTime)
+    content: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.now())
 
     user: Mapped["User"] = relationship(back_populates="chat_messages")

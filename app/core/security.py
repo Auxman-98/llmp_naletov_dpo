@@ -3,7 +3,8 @@ from typing import Any, Dict
 
 import base64
 from passlib.context import CryptContext
-import jwt
+from jose import jwt
+from jose.exceptions import ExpiredSignatureError, JWTError
 
 from app.core.config import settings
 from app.core.errors import UnauthorizedError
@@ -61,12 +62,12 @@ def create_access_token(sub: str) -> str:
 def decode_token(token: str) -> Dict[str, Any]:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    except jwt.ExpiredSignatureError:
+    except ExpiredSignatureError:
         raise UnauthorizedError(message="Токен истёк")
-    except jwt.InvalidTokenError:
+    except JWTError:
         raise UnauthorizedError(message="Некорректный токен")
 
     if payload.get("type") != "access":
         raise UnauthorizedError(message="Неверный тип токена")
-    
+
     return payload
