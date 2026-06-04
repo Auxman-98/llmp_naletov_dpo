@@ -1,3 +1,4 @@
+from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,8 +10,10 @@ from app.usecases.auth import (
     login_user,
     get_user_by_id,
 )
-from app.api.deps import (form_data, get_session,
-    get_current_user)
+from app.api.deps import (
+    security, form_data,
+    get_session, get_current_user
+)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -50,9 +53,10 @@ async def login(
 
 @router.get("/me")
 async def get_authorized_user(
+    token: Annotated[str, Depends(security)],
     session: AsyncSession = Depends(get_session),
 ) -> UserPublic:
-    curr_user = await get_current_user(session=session)
+    curr_user = await get_current_user(token, session)
     auth_user = await get_user_by_id(session, curr_user.id)
     user = UserPublic(
         id=auth_user.id,
