@@ -52,6 +52,6 @@ async def get_current_user(
             detail="user unauthorized",
         )
 
-    user = get_user_by_id(session, user_id)
+    user = await get_user_by_id(session, user_id)
 
     return user
