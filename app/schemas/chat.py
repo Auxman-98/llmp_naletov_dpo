@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, NonNegativeFloat
 
 
 class ChatRequest(BaseModel):
     prompt: str
-    system: str
-    max_history: int
-    temperature: float
+    system: str | None = None
+    max_history: int = Field(ge=5)
+    temperature: NonNegativeFloat
 
 
 class ChatResponse(BaseModel):
