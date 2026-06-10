@@ -1,3 +1,4 @@
+from typing import Annotated
 from fastapi import Depends, HTTPException
 from fastapi.security import (
     OAuth2PasswordBearer,
@@ -27,7 +28,7 @@ async def get_session() -> AsyncSession:
 
 
 async def get_current_user(
-    token: str = Depends(security),
+    token: Annotated[str, Depends(security)],
     session: AsyncSession = Depends(get_session),
 ) -> User | None:
     """
@@ -52,6 +53,6 @@ async def get_current_user(
             detail="user unauthorized",
         )
 
-    user = get_user_by_id(session, user_id)
+    user = await get_user_by_id(session, user_id)
 
     return user
