@@ -7,6 +7,7 @@ from fastapi.security import (
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import decode_token
+from app.core.errors import NotFoundError
 from app.db.session import AsyncSessionLocal
 from app.db.models import User
 from app.usecases.auth import get_user_by_id
@@ -45,14 +46,14 @@ async def get_current_user(
         HTTPException : ошибка авторизации пользователя.
     """
     payload = decode_token(token)
-
     user_id = payload.get("sub")
-    if user_id is None:
+
+    try:
+        user = await get_user_by_id(session, user_id)
+        return user
+    except NotFoundError:
         raise HTTPException(
             status_code=401,
             detail="user unauthorized",
         )
 
-    user = await get_user_by_id(session, user_id)
-
-    return user
