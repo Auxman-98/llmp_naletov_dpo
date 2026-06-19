@@ -34,7 +34,7 @@ class ChatMessageRepository():
     ) -> ChatMessage:
         stmt = (
             select(ChatMessage)
-            .where(user_id == uid)
+            .where(ChatMessage.user_id == uid)
             .order_by(
                 ChatMessage.created_at.desc
             )
