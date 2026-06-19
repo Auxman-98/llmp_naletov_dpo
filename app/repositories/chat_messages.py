@@ -7,7 +7,7 @@ from app.db.models import ChatMessage
 class ChatMessageRepository():
 
     def __init__(self, session: AsyncSession) -> None:
-        await self._session = session
+        self._session = session
 
 
     async def create_chat_message(
