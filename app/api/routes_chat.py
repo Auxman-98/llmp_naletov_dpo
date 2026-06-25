@@ -18,9 +18,9 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 @router.post("/", response_model=ChatResponse)
 async def get_response(
-    session: AsyncSession = Depends(get_session),
     token: Annotated[str, Depends(security)],
     request: ChatRequest,
+    session: AsyncSession = Depends(get_session)
 ) -> ChatResponse:
     curr_user = await get_current_user(token, session)
     answer = await ask(
@@ -35,9 +35,9 @@ async def get_response(
 
 @router.get("/history")
 async def get_chat_history(
-    session: AsyncSession = Depends(get_session),
     token: Annotated[str, Depends(security)],
-    request: ChatRequest,    
+    request: ChatRequest,
+    session: AsyncSession = Depends(get_session)
 ) -> ChatMessage:
     curr_user = await get_current_user(token, session)
     chat_history = await show_history(
@@ -51,8 +51,8 @@ async def get_chat_history(
 
 @router.delete("/history")
 async def delete_chat_history(
-    session: AsyncSession = Depends(get_session),
     token: Annotated[str, Depends(security)],
+    session: AsyncSession = Depends(get_session)
 ) -> None:
     curr_user = await get_current_user(token, session)
     await delete_history(session, curr_user.id)
