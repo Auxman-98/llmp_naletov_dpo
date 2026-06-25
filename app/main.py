@@ -7,6 +7,7 @@ from app.db.session import engine
 from app.db.base import Base
 
 from app.api.routes_auth import router as auth_router
+from app.api.routes_chat import router as chat_router
 
 
 @asynccontextmanager
@@ -22,3 +23,4 @@ app = FastAPI(
     lifespan=lifespan,
 )
 app.include_router(auth_router)
+app.include_router(chat_router)
