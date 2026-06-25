@@ -1,9 +1,9 @@
 import httpx
 
 from app.core.config import settings
-from app.core.errors import BadGatewayError,
-                            ServiceUnavailableError,
-                            GatewayTimeoutError
+from app.core.errors import (
+    BadGatewayError, ServiceUnavailableError,
+    GatewayTimeoutError)
 
 
 class OpenRouterClient():
@@ -21,7 +21,7 @@ class OpenRouterClient():
     async def generate(
         self,
         messages: list[dict[str, str]]
-    ): -> str | None:
+    ) -> str | None:
         url = f"{self.base_url}/chat/completions"
         async with httpx.AsyncClient(
             params={
