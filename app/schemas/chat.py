@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field, NonNegativeFloat
+from datetime import datetime
 
 
 class ChatRequest(BaseModel):
@@ -10,3 +11,13 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     answer: str
+
+class ChatMessage(BaseModel):
+    id: int
+    role: str
+    content: str
+    created_at: datetime
+
+
+class ChatHistory(BaseModel):
+    items: list[ChatMessage]
