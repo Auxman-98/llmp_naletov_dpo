@@ -7,8 +7,7 @@ from app.db.models import ChatMessage
 
 async def ask(
     session: AsyncSession,
-    system_instruction: str | None,
-    prompt: str,
+    prompt: str
 ) -> str | None:
     """
     Запускает данный запрос пользователя на сервер с моделью через чат.
@@ -16,25 +15,19 @@ async def ask(
 
     Args:
     -----
-        session (AsyncSession): асинхронная сессия, во время которой
-    открыт и работает чат с моделью.
-        system_instruction (str | None): опциональная системная
-    инструкция, которую пользователь может задать перед началом общения.
-        prompt (str): содержимое запроса пользователя.
+        session (AsyncSession):
+    асинхронная сессия, во время которой открыт и работает чат с моделью.
+        prompt (str):
+    содержимое запроса пользователя.
 
     Returns:
     --------
-        (str | None): результат обращения к серверу с запросом.
-    В случае успеха - ответ модели в чате.
+        (str | None):
+    результат обращения с запросом к серверу. В случае успеха - ответ модели в чате.
     """
     repo = ChatMessageRepository(session)
     messages = []
 
-    if system_instruction:
-        messages.append({
-            "role" : "system",
-            "content" : system_instruction,
-        })
     for message in repo.chat_history:
         messages.append({
             "role" : message.role,

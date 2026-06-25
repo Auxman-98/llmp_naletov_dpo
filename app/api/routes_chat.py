@@ -2,8 +2,9 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import ChatMessage
-from app.schemas.chat import ChatRequest, ChatResponse
+from app.schemas.chat import (
+    ChatRequest, ChatResponse, ChatHistory
+)
 from app.usecases.chat import (
     ask,
     show_history,
@@ -33,12 +34,12 @@ async def get_response(
     return ChatResponse(answer=answer)
 
 
-@router.get("/history")
+@router.get("/history", response_model=ChatHistory)
 async def get_chat_history(
     token: Annotated[str, Depends(security)],
     request: ChatRequest,
     session: AsyncSession = Depends(get_session)
-) -> ChatMessage:
+) -> ChatHistory:
     curr_user = await get_current_user(token, session)
     chat_history = await show_history(
         session,
@@ -46,7 +47,7 @@ async def get_chat_history(
         request.max_history
     )
 
-    return chat_history
+    return ChatHistory(items=list(chat_history))
 
 
 @router.delete("/history")
