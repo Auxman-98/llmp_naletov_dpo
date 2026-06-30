@@ -12,7 +12,8 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
 
-class ChatMessage(BaseModel):
+
+class ChatMessageOut(BaseModel):
     id: int
     role: str
     content: str
@@ -20,4 +21,4 @@ class ChatMessage(BaseModel):
 
 
 class ChatHistory(BaseModel):
-    items: list[ChatMessage]
+    items: list[ChatMessageOut]

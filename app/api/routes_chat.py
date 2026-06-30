@@ -1,9 +1,10 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.chat import (
-    ChatRequest, ChatResponse, ChatHistory
+    ChatRequest, ChatResponse,
+    ChatHistory
 )
 from app.usecases.chat import (
     ask,
@@ -38,14 +39,14 @@ async def get_response(
 @router.get("/history", response_model=ChatHistory)
 async def get_chat_history(
     token: Annotated[str, Depends(security)],
-    request: ChatRequest,
+    max_history: int = Query(ge=5),
     session: AsyncSession = Depends(get_session)
 ) -> ChatHistory:
     curr_user = await get_current_user(token, session)
     chat_history = await show_history(
         session,
         curr_user.id,
-        request.max_history
+        max_history
     )
 
     return ChatHistory(items=chat_history)
