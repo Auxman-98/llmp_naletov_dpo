@@ -1,5 +1,6 @@
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import List, Dict
 
 from app.db.models import ChatMessage
 
@@ -9,6 +10,20 @@ class ChatMessageRepository():
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
+
+    async def show_history(
+        self,
+        uid: int,
+    ) -> List[Dict]:
+        stmt = (
+            select(ChatMessage)
+            .where(ChatMessage.user_id == uid)
+            .order_by(
+                ChatMessage.created_at.desc())
+        )
+        result = await self._session.execute(stmt)
+
+        return result.mappings().all()
 
     async def create_chat_message(
         self,
@@ -21,7 +36,7 @@ class ChatMessageRepository():
             role="user",
             content=content,
         )
-        await self._session.add(message)
+        self._session.add(message)
         await self._session.commit()
         await self._session.refresh(message)
 
@@ -36,13 +51,14 @@ class ChatMessageRepository():
             select(ChatMessage)
             .where(ChatMessage.user_id == uid)
             .order_by(
-                ChatMessage.created_at.desc
+                ChatMessage.created_at.desc()
             )
             .limit(n)
         )
         result = await self._session.scalars(stmt)
+        messages = await result.all()
 
-        return result.all()
+        return messages
 
     async def delete_chat_history(self, uid: int) -> None:
         stmt = (

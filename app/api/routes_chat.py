@@ -27,8 +27,9 @@ async def get_response(
     answer = await ask(
         session,
         curr_user.id,
+        request.prompt,
         request.system,
-        request.prompt
+        request.temperature
     )
 
     return ChatResponse(answer=answer)
@@ -47,7 +48,7 @@ async def get_chat_history(
         request.max_history
     )
 
-    return ChatHistory(items=list(chat_history))
+    return ChatHistory(items=chat_history)
 
 
 @router.delete("/history")
