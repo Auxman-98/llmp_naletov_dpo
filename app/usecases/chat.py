@@ -1,13 +1,16 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import List, Dict
 
 from app.repositories.chat_messages import ChatMessageRepository
 from app.services.openrouter_client import OpenRouterClient
-from app.db.models import ChatMessage
 
 
 async def ask(
     session: AsyncSession,
-    prompt: str
+    uid: int,
+    prompt: str,
+    system: str | None,
+    temperature: float
 ) -> str | None:
     """
     Запускает данный запрос пользователя на сервер с моделью через чат.
@@ -28,22 +31,23 @@ async def ask(
     repo = ChatMessageRepository(session)
     messages = []
 
-    for message in repo.chat_history:
+    for message in await repo.show_history(uid):
         messages.append({
-            "role" : message.role,
-            "content" : message.content,
+            "role" : message["role"],
+            "content" : message["content"]
         })
     curr_message = await repo.create_chat_message(
-        role=messages[-1]["role"],
+        uid=uid,
+        role="user",
         content=prompt,
     )
     messages.append({
         "role" : curr_message.role,
-        "content" : curr_message.content,
+        "content" : curr_message.content
     })
 
     client = OpenRouterClient()
-    response = await client.generate(messages)
+    response = await client.generate(messages, system, temperature)
     if response:
         return response
 
@@ -52,7 +56,7 @@ async def show_history(
     session: AsyncSession,
     uid: int,
     max_history: int
-) -> ChatMessage:
+) -> List[Dict]:
     """
     Показывает историю чата активного пользователя с моделью в соответствии
     с заданным максимальным количеством сохранённых сообщений.
@@ -68,7 +72,7 @@ async def show_history(
 
     Returns:
     --------
-        (ChatMessage):
+        (list[dict]):
     История чата с моделью в соответствии с пользовательскими настройками.
     """
     repo = ChatMessageRepository(session)
